@@ -1,4 +1,10 @@
 <?php
+/**
+* Fungsi untuk daftar User
+* Login User untuk Mendapatkan Api Key
+*
+*/
+
 require_once '../include/UserDB.php';
 require_once '../include/PassHash.php';
 
@@ -56,7 +62,7 @@ $app->post('/login', function() use ($app){
                 $response["error"] = false;
                 $response['name'] = $user['name'];
                 $response['username'] = $user['username'];
-                
+
                 $response['apiKey'] = $user['api_key'];
                 $response['activation_status'] = $user['activation_status'];
                 $response['createdAt'] = $user['created_at'];
@@ -78,11 +84,10 @@ $app->post('/login', function() use ($app){
 
 
 
-//contoh
-$app->get('/foo', function () use ($app) {
-    echo "You will see this...";
-    $app->stop();
-    echo "But not this";
+//contoh hello world
+$app->get('/hello', function () use ($app) {
+    echo "Hello dab";
+
 });
 
 
