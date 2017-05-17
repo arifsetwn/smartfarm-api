@@ -9,7 +9,7 @@ class KoneksiDb {
 
 //fungsi koneksi ke database
   function connect(){
-    include_once dirname(__FILE__) . '/db.php';
+    include_once dirname(__FILE__) . '/dbConfig.php';
 
     $this->conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
@@ -19,6 +19,9 @@ class KoneksiDb {
 
     return $this->conn;
   }
+
+
+  
 }
 
 ?>
