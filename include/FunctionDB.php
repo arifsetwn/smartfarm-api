@@ -84,13 +84,14 @@ class FunctionDB{
 
       //cek data user berdasar email
       public function cekDatabyEmail($email) {
-        $query = $this->conn->prepare("SELECT username, name, api_key, activation_status, role FROM user3 WHERE email = ?");
+        $query = $this->conn->prepare("SELECT id, username, name, api_key, activation_status, role FROM user3 WHERE email = ?");
         $query->bind_param("s", $email);
         if ($query->execute()) {
-          $query->bind_result($username, $name, $api_key, $activation_status, $role);
+          $query->bind_result($id, $username, $name, $api_key, $activation_status, $role);
           $query->fetch();
 
           $user = array();
+          $user["id"]=$id;
           $user["username"]=$username;
           $user["name"]=$name;
           $user["api_key"]=$api_key;
@@ -144,6 +145,38 @@ class FunctionDB{
               }
       }
 
+      //update timestamp_expiry baru
+      public function updateTime($id){
+          $expiry_time = time() + 600;
+          $query = $this->conn->prepare("UPDATE user3 SET expiry_time = ? WHERE id = ?");
+          $query->bind_param("si",$expiry_time, $id);
+              if ($query->execute()){
+                return $expiry_time;
+              }else {
+                return NULL;
+              }
+      }
+
+      public function CekExpiryTime($api_key){
+        $query = $this->conn->prepare("SELECT expiry_time from user3 WHERE api_key = ?");
+        $query->bind_param("s", $api_key);
+        $query->execute();
+        $query->bind_result($expiry_time);
+        $query->fetch();
+        return $expiry_time;
+
+      }
+
+      //aktivate user
+      public function activateuser($id){
+        $query = $this->conn->prepare("UPDATE user3 SET activation_status = 1 WHERE id = ?");
+        $query->bind_param("i",$id);
+        if ($query->execute()){
+          return true;
+        }else {
+          return NULL;
+        }
+      }
 
 }
 

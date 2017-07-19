@@ -1,4 +1,4 @@
-<?php
+  a<?php
   require_once 'include/functionDB.php';
 
   //fungsi registrasi user baru
@@ -43,14 +43,18 @@ function cekLogin(){
   $db = new FunctionDB();
   if($db->prosesLogin($email,$password)){
 
-   $user = $db->cekDatabyEmail($email);
+   $user = $db->cekDatabyEmail($email); // load data dari db
+   $api_key = $db->updateApiKey($user['id']); //ganti api key baru tiap login
+   $expiry_time= $db->updateTime($user['id']); //update timestamp_expiry tiap login
 
       if ($user != NULL) {
+          $response['id'] = $user['id'];
           $response['name'] = $user['name'];
           $response['username'] = $user['username'];
-          $response['apiKey'] = $user['api_key'];
+          $response['apiKey'] = $api_key;
           $response['activation_status'] = $user['activation_status'];
           $response['role'] = $user['role'];
+          $response['expiry_time'] = $expiry_time;
       } else {
 
           $response['message'] = "Error tidak ditemukan data";
@@ -138,6 +142,7 @@ function ShowNode() {
 
 
 function newApiKey($id){
+//verifikasi token dulu apakah sesuai dengan token id
 
   $db = new functionDB();
   $app = \Slim\Slim::getInstance();
@@ -152,7 +157,20 @@ function newApiKey($id){
   echoRespnse(400, $response);
 }
 
+function activate($id){
+  $db = new functionDB();
+  $app = \Slim\Slim::getInstance();
+  $response = array();
+  $aktif = $db->activateuser($id);
+  if ($aktif != NULL){
+        $response["status"] = 'Sukses';
+      } else {
+        $response["status"] = "Error";
+      }
 
+echoRespnse(400, $response);
+
+}
 
 /**
  * Echoing json response to client
